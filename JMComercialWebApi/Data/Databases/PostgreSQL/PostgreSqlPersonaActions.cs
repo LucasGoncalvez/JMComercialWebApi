@@ -1,11 +1,11 @@
 ﻿using JMComercialWebApi.Data.Abstracts;
 using JMComercialWebApi.Models.Tables;
 
-namespace JMComercialWebApi.Data.Databases.SQLServer
+namespace JMComercialWebApi.Data.Databases.PostgreSQL
 {
-    public class SqlServerPersonaActions : PersonaBase
+    public class PostgreSqlPersonaActions : PersonaBase
     {
-        public SqlServerPersonaActions(string connectionString) : base(connectionString)
+        public PostgreSqlPersonaActions(string connectionString) : base(connectionString)
         {
         }
 
@@ -29,7 +29,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             return new Persona
             {
                 Id = id,
-                Nombre = "SQL Server"
+                Nombre = "PostgreSQL"
             };
         }
 

@@ -1,4 +1,6 @@
 ﻿using JMComercialWebApi.Data;
+using JMComercialWebApi.Data.Databases.PostgreSQL;
+using JMComercialWebApi.Data.Databases.SQLServer;
 using JMComercialWebApi.Data.Interfaces;
 using JMComercialWebApi.Models.Tables;
 
@@ -27,9 +29,17 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<Persona> Get(int id)
+        public async Task<Persona> Get(int id)
         {
-            throw new NotImplementedException();
+            switch(_database)
+            {
+                case SQLServer:
+                    return await new SqlServerPersonaActions("").Get(id); ;
+                case PostgreSQL:
+                    return await new PostgreSqlPersonaActions("").Get(id);
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public Task<IEnumerable<Persona>> GetAll()

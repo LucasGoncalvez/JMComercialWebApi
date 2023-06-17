@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Data\Databases\MySQL\" />
     <Folder Include="Data\Databases\Oracle\" />
-    <Folder Include="Data\Databases\PostgreSQL\" />
   </ItemGroup>
 
 </Project>
