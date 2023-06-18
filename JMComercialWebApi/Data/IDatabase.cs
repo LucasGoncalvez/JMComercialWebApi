@@ -2,6 +2,6 @@
 {
     public interface IDatabase
     {
-        public void GetConection();
+        public string GetConectionString();
     }
 }

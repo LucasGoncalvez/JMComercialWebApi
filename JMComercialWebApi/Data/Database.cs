@@ -2,57 +2,92 @@
 {
     public class SQLServer : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public SQLServer(IConfiguration configuration) 
         {
-            Console.WriteLine("SQLServer");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:SqlServer");
         }
     }
 
     public class PostgreSQL : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public PostgreSQL(IConfiguration configuration)
         {
-            Console.WriteLine("PostgreSQL");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:PostgreSql");
         }
     }
 
     public class Oracle : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public Oracle(IConfiguration configuration)
         {
-            Console.WriteLine("Oracle");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:Oracle");
         }
     }
 
     public class MySQL : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public MySQL(IConfiguration configuration)
         {
-            Console.WriteLine("MySQL");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:MySql");
         }
     }
 
     public class MariaDB : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public MariaDB(IConfiguration configuration)
         {
-            Console.WriteLine("MariaDB");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:");
         }
     }
 
     public class Db2 : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public Db2(IConfiguration configuration)
         {
-            Console.WriteLine("Db2");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:");
         }
     }
 
     public class SQLite : IDatabase
     {
-        public void GetConection()
+        private readonly IConfiguration _configuration;
+        public SQLite(IConfiguration configuration)
         {
-            Console.WriteLine("SQLite");
+            _configuration = configuration;
+        }
+        public string GetConectionString()
+        {
+            return _configuration.GetValue<string>("ConnectionStrings:");
         }
     }
 }

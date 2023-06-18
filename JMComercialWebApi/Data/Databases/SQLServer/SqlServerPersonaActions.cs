@@ -1,5 +1,7 @@
 ﻿using JMComercialWebApi.Data.Abstracts;
 using JMComercialWebApi.Models.Tables;
+using System.Globalization;
+using System.Transactions;
 
 namespace JMComercialWebApi.Data.Databases.SQLServer
 {
@@ -26,6 +28,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
 
         public override async Task<Persona> Get(int id)
         {
+            Console.WriteLine(_connectionString);
             return new Persona
             {
                 Id = id,

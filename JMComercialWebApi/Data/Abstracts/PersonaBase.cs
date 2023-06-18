@@ -5,7 +5,7 @@ namespace JMComercialWebApi.Data.Abstracts
 {
     public abstract class PersonaBase : IPersonaActions
     {
-        public string _connectionString;
+        public readonly string _connectionString;
         public PersonaBase(string connectionString)
         {
             _connectionString = connectionString;

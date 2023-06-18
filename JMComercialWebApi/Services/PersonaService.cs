@@ -14,7 +14,7 @@ namespace JMComercialWebApi.Services
             _database = database;
         }
 
-        public Task Add(Persona entity)
+        public Task Add(Persona persona)
         {
             throw new NotImplementedException();
         }
@@ -31,10 +31,11 @@ namespace JMComercialWebApi.Services
 
         public async Task<Persona> Get(int id)
         {
-            switch(_database)
+            //Cambiar que se cree una nueva instancia cada vez que se quiere invocar un método
+            switch (_database)
             {
                 case SQLServer:
-                    return await new SqlServerPersonaActions("").Get(id); ;
+                    return await new SqlServerPersonaActions(_database.GetConectionString()).Get(id); 
                 case PostgreSQL:
                     return await new PostgreSqlPersonaActions("").Get(id);
                 default:
@@ -52,7 +53,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task Update(Persona entity)
+        public Task Update(Persona persona)
         {
             throw new NotImplementedException();
         }
