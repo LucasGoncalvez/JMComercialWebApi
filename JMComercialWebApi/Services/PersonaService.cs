@@ -14,7 +14,31 @@ namespace JMComercialWebApi.Services
             _database = database;
         }
 
-        public Task Add(Persona persona)
+        public async Task<Persona> Get(int id)
+        {
+            try
+            {
+                return await _database._personaActions.Get(id);
+            }
+            catch (Exception)
+            {
+                throw; //Se propaga la excepción a PersonaController
+            }
+        }
+
+        public async Task<IEnumerable<Persona>> GetAll()
+        {
+            try
+            {
+                return await _database._personaActions.GetAll();
+            }
+            catch (Exception)
+            {
+                throw; //Se propaga la excepción a PersonaController
+            }
+        }
+
+        public async Task Add(Persona persona)
         {
             throw new NotImplementedException();
         }
@@ -25,25 +49,6 @@ namespace JMComercialWebApi.Services
         }
 
         public Task Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Persona> Get(int id)
-        {
-            //Cambiar que se cree una nueva instancia cada vez que se quiere invocar un método
-            switch (_database)
-            {
-                case SQLServer:
-                    return await new SqlServerPersonaActions(_database.GetConectionString()).Get(id); 
-                case PostgreSQL:
-                    return await new PostgreSqlPersonaActions("").Get(id);
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        public Task<IEnumerable<Persona>> GetAll()
         {
             throw new NotImplementedException();
         }

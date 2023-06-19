@@ -28,17 +28,34 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
 
         public override async Task<Persona> Get(int id)
         {
-            Console.WriteLine(_connectionString);
-            return new Persona
+            try
             {
-                Id = id,
-                Nombre = "SQL Server"
-            };
+                Console.WriteLine(_connectionString);
+                return new Persona
+                {
+                    Id = id,
+                    Nombre = "SQL Server"
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public override Task<IEnumerable<Persona>> GetAll()
+        public override async Task<IEnumerable<Persona>> GetAll()
         {
-            throw new NotImplementedException();
+            Console.WriteLine(_connectionString);
+            List<Persona> personas = new();
+            for(int i = 0; i < 10; i++)
+            {
+                personas.Add(new Persona
+                {
+                    Id = i + 1,
+                    Nombre = "SQL Server"
+                });
+            }
+            return personas;
         }
 
         public override Task<IEnumerable<PersonaContacto>> GetContactos(int id)

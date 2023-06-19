@@ -16,16 +16,20 @@ namespace JMComercialWebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<Persona>> Get(int id)
         {
             try
             {
-                Persona persona = await _database.Get(id);
-                return Ok(persona);
+                var persona = await _database.Get(id);
+                if (persona == null)
+                {
+                    return NotFound(); // Retorna un código de estado 404 si no se encuentra la persona
+                }
+                return Ok(persona); // Retorna un código de estado 200 con la persona encontrada
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Ha ocurrido un error: {ex.Message}"); // Retorna un código de estado 400 en caso de error
             }
         }
 
@@ -34,17 +38,21 @@ namespace JMComercialWebApi.Controllers
         {
             try
             {
-                IEnumerable<Persona> personas = await _database.GetAll();
-                return Ok(personas);
+                var personas = await _database.GetAll();
+                if (personas == null)
+                {
+                    return NotFound(); // Retorna un código de estado 404 si no se encuentra
+                }
+                return Ok(personas); // Retorna un código de estado 200 con lo encontrado
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Ha ocurrido un error: {ex.Message}"); // Retorna un código de estado 400 en caso de error
             }
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(Persona persona)
+        public async Task<ActionResult> Add(Persona persona)
         {
             try
             {
@@ -53,9 +61,10 @@ namespace JMComercialWebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Ha ocurrido un error: {ex.Message}");
             }
         }
+
 
         [HttpPut("Update")]
         public async Task<IActionResult> Update(Persona persona)

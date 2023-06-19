@@ -1,4 +1,7 @@
-﻿namespace JMComercialWebApi.Data
+﻿using JMComercialWebApi.Data.Databases.PostgreSQL;
+using JMComercialWebApi.Data.Databases.SQLServer;
+
+namespace JMComercialWebApi.Data
 {
     public class SQLServer : IDatabase
     {
@@ -6,7 +9,11 @@
         public SQLServer(IConfiguration configuration) 
         {
             _configuration = configuration;
+            _personaActions = new SqlServerPersonaActions(configuration.GetConnectionString("SqlServer"));
         }
+
+        public dynamic _personaActions { get; set; }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:SqlServer");
@@ -19,7 +26,11 @@
         public PostgreSQL(IConfiguration configuration)
         {
             _configuration = configuration;
+            _personaActions = new PostgreSqlPersonaActions(configuration.GetConnectionString("SqlServer"));
         }
+
+        public dynamic _personaActions { get; set; }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:PostgreSql");
@@ -33,6 +44,9 @@
         {
             _configuration = configuration;
         }
+
+        public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:Oracle");
@@ -46,6 +60,9 @@
         {
             _configuration = configuration;
         }
+
+        public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:MySql");
@@ -59,6 +76,9 @@
         {
             _configuration = configuration;
         }
+
+        public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:");
@@ -72,6 +92,9 @@
         {
             _configuration = configuration;
         }
+
+        public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:");
@@ -85,6 +108,9 @@
         {
             _configuration = configuration;
         }
+
+        public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public string GetConectionString()
         {
             return _configuration.GetValue<string>("ConnectionStrings:");
