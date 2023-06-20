@@ -16,11 +16,11 @@ namespace JMComercialWebApi.Data.Abstracts
 
         public abstract Task Delete(int id);
 
-        public abstract Task<Persona> Get(int id);
+        public abstract Task<Persona?> Get(int id);
 
-        public abstract Task<IEnumerable<Persona>> GetAll();
+        public abstract Task<IEnumerable<Persona>?> GetAll();
 
-        public abstract Task<IEnumerable<PersonaContacto>> GetContactos(int id);
+        public abstract Task<IEnumerable<PersonaContacto>?> GetContactos(int id);
 
         public abstract Task Update(Persona entity);
     }

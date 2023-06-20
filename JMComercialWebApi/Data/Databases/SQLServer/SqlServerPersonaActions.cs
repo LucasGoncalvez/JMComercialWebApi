@@ -1,7 +1,8 @@
 ﻿using JMComercialWebApi.Data.Abstracts;
 using JMComercialWebApi.Models.Tables;
-using System.Globalization;
-using System.Transactions;
+using Microsoft.Data.SqlClient;
+using JMComercialWebApi.Utils;
+using System.Data;
 
 namespace JMComercialWebApi.Data.Databases.SQLServer
 {
@@ -26,24 +27,68 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             throw new NotImplementedException();
         }
 
-        public override async Task<Persona> Get(int id)
+        #region Get
+        public override async Task<Persona?> Get(int id)
         {
             try
             {
-                Console.WriteLine(_connectionString);
-                return new Persona
+                using SqlConnection conn = new(_connectionString);
+                await conn.OpenAsync();
+                string script =
+                    @$"SELECT [Id]
+                          ,[Nombre]
+                          ,[Apellido]
+                          ,[TipoDocumentoId]
+                          ,[NumeroDocumento]
+                          ,[PaisId]
+                          ,[DepartamentoId]
+                          ,[CiudadId]
+                          ,[ZonaBarrioId]
+                          ,[Direccion]
+                          ,[Geolocalizacion]
+                          ,[LoginIdAlta]
+                          ,[FechaAlta]
+                          ,[LoginIdModificacion]
+                          ,[FechaUltModificacion]
+                          ,[Habilitado]
+                      FROM [dbo].[Persona]
+                      WHERE [Id] = @PersonaId";
+                using SqlCommand cmd = new(script, conn);
+                cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
+                using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                if (reader.Read())
                 {
-                    Id = id,
-                    Nombre = "SQL Server"
-                };
+                    Persona persona = new()
+                    {
+                        Id = reader.GetInt32(0),
+                        Nombre = reader.GetString(1),
+                        Apellido = Safer.SafeGetString(reader, 2),
+                        TipoDocumentoId = Safer.SafeGetInt(reader, 3),
+                        NumeroDocumento = Safer.SafeGetString(reader, 4),
+                        PaisId = reader.GetInt32(5),
+                        DepartamentoId = reader.GetInt32(6),
+                        CiudadId = reader.GetInt32(7),
+                        ZonaBarrioId = Safer.SafeGetInt(reader, 8),
+                        Direccion = Safer.SafeGetString(reader, 9),
+                        Geolocalizacion = Safer.SafeGetString(reader, 10),
+                        LoginIdAlta = Safer.SafeGetInt(reader, 11),
+                        FechaAlta = Safer.SafeGetDateTime(reader, 12),
+                        LoginIdUltMod = Safer.SafeGetInt(reader, 13),
+                        FechaUltMod = Safer.SafeGetDateTime(reader, 14),
+                        Habilitado = reader.GetBoolean(15)
+                    };
+                    return persona;
+                }
+                return null;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        #endregion
 
-        public override async Task<IEnumerable<Persona>> GetAll()
+        public override async Task<IEnumerable<Persona>?> GetAll()
         {
             Console.WriteLine(_connectionString);
             List<Persona> personas = new();
@@ -58,7 +103,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             return personas;
         }
 
-        public override Task<IEnumerable<PersonaContacto>> GetContactos(int id)
+        public override Task<IEnumerable<PersonaContacto>?> GetContactos(int id)
         {
             throw new NotImplementedException();
         }

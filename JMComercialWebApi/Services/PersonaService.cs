@@ -14,7 +14,7 @@ namespace JMComercialWebApi.Services
             _database = database;
         }
 
-        public async Task<Persona> Get(int id)
+        public async Task<Persona?> Get(int id)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public async Task<IEnumerable<Persona>> GetAll()
+        public async Task<IEnumerable<Persona>?> GetAll()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public async Task Add(Persona persona)
+        public Task Add(Persona persona)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<PersonaContacto>> GetContactos(int id)
+        public Task<IEnumerable<PersonaContacto>?> GetContactos(int id)
         {
             throw new NotImplementedException();
         }

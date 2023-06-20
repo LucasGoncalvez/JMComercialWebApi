@@ -6,7 +6,7 @@ namespace JMComercialWebApi.Data.Interfaces
     public interface IPersonaActions : IGenericActions<Persona>
     { 
         //Metodos específicos de la entidad Persona
-        public Task<IEnumerable<PersonaContacto>> GetContactos(int id);
+        public Task<IEnumerable<PersonaContacto>?> GetContactos(int id);
         public Task AddContactos(List<PersonaContacto> listaContacots);
     }
 
