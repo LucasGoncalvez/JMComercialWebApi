@@ -93,5 +93,6 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

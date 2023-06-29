@@ -2,11 +2,12 @@
 using JMComercialWebApi.Data.Databases.PostgreSQL;
 using JMComercialWebApi.Data.Databases.SQLServer;
 using JMComercialWebApi.Data.Interfaces;
+using JMComercialWebApi.Models.Gets;
 using JMComercialWebApi.Models.Tables;
 
 namespace JMComercialWebApi.Services
 {
-    public class PersonaService : IPersonaActions
+    public class PersonaService : IPersonaAction
     {
         private readonly IDatabase _database;
         public PersonaService(IDatabase database) 
@@ -26,7 +27,7 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public async Task<IEnumerable<Persona>?> GetAll()
+        public async Task<List<PersonaPreview>?> GetAll()
         {
             try
             {
@@ -43,7 +44,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task AddContactos(List<PersonaContacto> listaContacots)
+        public Task AddContactos(List<PersonaContacto>? listaContacots)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +54,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<PersonaContacto>?> GetContactos(int id)
+        public Task<List<PersonaContacto>?> GetContactos(int id)
         {
             throw new NotImplementedException();
         }

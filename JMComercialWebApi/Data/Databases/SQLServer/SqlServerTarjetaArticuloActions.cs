@@ -20,12 +20,12 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             throw new NotImplementedException();
         }
 
-        public override Task<TarjetaArticulo> Get(int id)
+        public override Task<TarjetaArticulo?> Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IEnumerable<TarjetaArticulo>> GetAll()
+        public override Task<List<TarjetaArticulo>?> GetAll()
         {
             throw new NotImplementedException();
         }

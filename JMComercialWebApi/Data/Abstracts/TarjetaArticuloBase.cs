@@ -3,7 +3,7 @@ using JMComercialWebApi.Models.Tables;
 
 namespace JMComercialWebApi.Data.Abstracts
 {
-    public abstract class TarjetaArticuloBase : ITarjetaArticuloActions
+    public abstract class TarjetaArticuloBase : ITarjetaArticuloAction
     {
         public string _connectionString;
         public TarjetaArticuloBase(string connectionString) 
@@ -14,9 +14,9 @@ namespace JMComercialWebApi.Data.Abstracts
 
         public abstract Task Delete(int id);
 
-        public abstract Task<TarjetaArticulo> Get(int id);
+        public abstract Task<TarjetaArticulo?> Get(int id);
 
-        public abstract Task<IEnumerable<TarjetaArticulo>> GetAll();
+        public abstract Task<List<TarjetaArticulo>?> GetAll();
 
         public abstract Task Update(TarjetaArticulo entity);
     }

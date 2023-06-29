@@ -1,4 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Data.Common;
 
 namespace JMComercialWebApi.Utils
 {
@@ -31,6 +33,29 @@ namespace JMComercialWebApi.Utils
         public static DateTime? SafeGetDateTime(SqlDataReader reader, int index)
         {
             return reader.IsDBNull(index) ? null : (DateTime?)reader.GetDateTime(index);
+        }
+
+
+
+
+        public static int? SafeGetInt(SqlDataReader reader, string column)
+        {
+            return reader.IsDBNull(column) ? null : (int?)reader.GetInt32(column);
+        }
+
+        public static string? SafeGetString(SqlDataReader reader, string column)
+        {
+            return reader.IsDBNull(column) ? null : (string?)reader.GetString(column);
+        }
+
+        public static bool? SafeGetBoolean(SqlDataReader reader, string column)
+        {
+            return reader.IsDBNull(column) ? null : (bool?)reader.GetBoolean(column);
+        }
+
+        public static DateTime? SafeGetDateTime(SqlDataReader reader, string column)
+        {
+            return reader.IsDBNull(column) ? null : (DateTime?)reader.GetDateTime(column);
         }
     }
 }
