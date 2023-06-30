@@ -39,7 +39,7 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public async Task<int> Add(Persona persona)
+        public async Task<int?> Add(Persona persona)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(int id)
+        public Task<int?> Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -66,7 +66,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public async Task<int> Update(Persona persona)
+        public async Task<int?> Update(Persona persona)
         {
             try
             {

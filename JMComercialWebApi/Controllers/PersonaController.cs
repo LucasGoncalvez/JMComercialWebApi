@@ -56,8 +56,12 @@ namespace JMComercialWebApi.Controllers
         {
             try
             {
-                await _database.Add(persona);
-                return Ok();
+                int? result = await _database.Add(persona);
+                if (result == null)
+                {
+                    return BadRequest("No se pudo agregar a Persona");
+                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -71,7 +75,11 @@ namespace JMComercialWebApi.Controllers
         {
             try
             {
-                int result = await _database.Update(persona);
+                int? result = await _database.Update(persona); //Retorna la cantidad de registros afectados
+                if (result == null)
+                {
+                    return BadRequest("No se pudo actualizar a Persona");
+                }
                 return Ok(result);
             }
             catch (Exception ex)

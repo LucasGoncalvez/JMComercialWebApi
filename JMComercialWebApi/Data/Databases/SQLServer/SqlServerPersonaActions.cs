@@ -13,45 +13,47 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         {
         }
 
-        public override async Task<int> Add(Persona persona)
+        #region Add
+        public override async Task<int?> Add(Persona persona)
         {
             try
             {
                 using SqlConnection conn = new(_connectionString);
                 await conn.OpenAsync();
-                string script = 
+                string script =
                     $@"INSERT INTO [dbo].[Persona]
-                           ([Nombre]
-                           ,[Apellido]
-                           ,[TipoDocumentoId]
-                           ,[NumeroDocumento]
-                           ,[PaisId]
-                           ,[DepartamentoId]
-                           ,[CiudadId]
-                           ,[ZonaBarrioId]
-                           ,[Direccion]
-                           ,[Geolocalizacion]
-                           ,[LoginIdAlta]
-                           ,[FechaAlta]
-                           ,[LoginIdModificacion]
-                           ,[FechaUltModificacion]
-                           ,[Habilitado])
-                     VALUES
-                           (@Nombre
-                           ,@Apellido
-                           ,@TipoDocumentoId
-                           ,@NumeroDocumento
-                           ,@PaisId
-                           ,@DepartamentoId
-                           ,@CiudadId
-                           ,@ZonaBarrioId
-                           ,@Direccion
-                           ,@Geolocalizacion
-                           ,@LoginIdAlta
-                           ,@FechaAlta
-                           ,@LoginIdModificacion
-                           ,@FechaUltModificacion
-                           ,@Habilitado)";
+                       ([Nombre]
+                       ,[Apellido]
+                       ,[TipoDocumentoId]
+                       ,[NumeroDocumento]
+                       ,[PaisId]
+                       ,[DepartamentoId]
+                       ,[CiudadId]
+                       ,[ZonaBarrioId]
+                       ,[Direccion]
+                       ,[Geolocalizacion]
+                       ,[LoginIdAlta]
+                       ,[FechaAlta]
+                       ,[LoginIdModificacion]
+                       ,[FechaUltModificacion]
+                       ,[Habilitado])
+                 OUTPUT INSERTED.[Id]
+                 VALUES
+                       (@Nombre
+                       ,@Apellido
+                       ,@TipoDocumentoId
+                       ,@NumeroDocumento
+                       ,@PaisId
+                       ,@DepartamentoId
+                       ,@CiudadId
+                       ,@ZonaBarrioId
+                       ,@Direccion
+                       ,@Geolocalizacion
+                       ,@LoginIdAlta
+                       ,@FechaAlta
+                       ,@LoginIdModificacion
+                       ,@FechaUltModificacion
+                       ,@Habilitado)";
                 using SqlCommand cmd = new(script, conn);
                 cmd.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = persona.Nombre;
                 cmd.Parameters.Add("@Apellido", SqlDbType.VarChar).Value = persona.Apellido ?? (object)DBNull.Value;
@@ -68,7 +70,8 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
                 cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
                 cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
-                int newId = await cmd.ExecuteNonQueryAsync(); //Ver para retornar el id asignado al nuevo registro para así agregarle los contactos. Ahora retorna la cantidad de registros agregados nada más
+                int? newId = (int?)await cmd.ExecuteScalarAsync();
+                //Guardar los contactos
                 return newId;
             }
             catch (Exception)
@@ -77,15 +80,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             }
         }
 
-        public override Task AddContactos(List<PersonaContacto>? listaContactos)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<int> Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
         #region Get
         public override async Task<Persona?> Get(int id)
@@ -130,7 +125,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 using SqlCommand cmd = new(script, conn);
                 cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
                 using SqlDataReader reader = await cmd.ExecuteReaderAsync();
-                Persona persona = new();
+                Persona? persona = null;
                 if (reader.Read())
                 {
                     persona = new()
@@ -171,7 +166,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                                  ,PC.[Habilitado] Habilitado
                       FROM [dbo].[PersonaContacto] PC
                       INNER JOIN TipoContacto AS TC ON TC.Id = PC.TipoContactoId
-                      WHERE PersonaId = @PersonaId AND PC.Habilitado = 1";
+                      WHERE PersonaId = @PersonaId";
                     using SqlCommand cmdContact = new(scriptContact, conn);
                     cmdContact.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
                     using SqlDataReader readerContact = await cmdContact.ExecuteReaderAsync();
@@ -200,6 +195,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         }
         #endregion
 
+        #region GetAll
         public override async Task<List<PersonaPreview>?> GetAll()
         {
             try
@@ -242,13 +238,10 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 throw;
             }
         }
+        #endregion
 
-        public override Task<List<PersonaContacto>?> GetContactos(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task<int> Update(Persona persona)
+        #region Update
+        public override async Task<int?> Update(Persona persona)
         {
             try
             {
@@ -289,13 +282,29 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
                 cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
                 cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = persona.Id;
-                int result = await cmd.ExecuteNonQueryAsync(); //Ver para retornar el id asignado al nuevo registro para así agregarle los contactos. Ahora retorna la cantidad de registros agregados nada más
+                int result = await cmd.ExecuteNonQueryAsync();
                 return result;
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+        #endregion
+
+        public override Task<List<PersonaContacto>?> GetContactos(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task AddContactos(List<PersonaContacto>? listaContactos)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<int?> Delete(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
