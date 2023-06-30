@@ -11,11 +11,11 @@ namespace JMComercialWebApi.Data.Abstracts
         {
             _connectionString = connectionString;
         }
-        public abstract Task Add(Persona entity);
+        public abstract Task<int> Add(Persona entity);
 
         public abstract Task AddContactos(List<PersonaContacto>? listaContacots);
 
-        public abstract Task Delete(int id);
+        public abstract Task<int> Delete(int id);
 
         public abstract Task<Persona?> Get(int id);
 
@@ -23,6 +23,6 @@ namespace JMComercialWebApi.Data.Abstracts
 
         public abstract Task<List<PersonaContacto>?> GetContactos(int id);
 
-        public abstract Task Update(Persona entity);
+        public abstract Task<int> Update(Persona entity);
     }
 }

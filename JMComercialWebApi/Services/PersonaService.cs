@@ -39,9 +39,16 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public Task Add(Persona persona)
+        public async Task<int> Add(Persona persona)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _database._personaActions.Add(persona);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task AddContactos(List<PersonaContacto>? listaContacots)
@@ -49,7 +56,7 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task Delete(int id)
+        public Task<int> Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -59,9 +66,16 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task Update(Persona persona)
+        public async Task<int> Update(Persona persona)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _database._personaActions.Update(persona);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

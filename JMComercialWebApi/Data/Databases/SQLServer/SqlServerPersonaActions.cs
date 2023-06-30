@@ -13,17 +13,76 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         {
         }
 
-        public override Task Add(Persona entity)
+        public override async Task<int> Add(Persona persona)
+        {
+            try
+            {
+                using SqlConnection conn = new(_connectionString);
+                await conn.OpenAsync();
+                string script = 
+                    $@"INSERT INTO [dbo].[Persona]
+                           ([Nombre]
+                           ,[Apellido]
+                           ,[TipoDocumentoId]
+                           ,[NumeroDocumento]
+                           ,[PaisId]
+                           ,[DepartamentoId]
+                           ,[CiudadId]
+                           ,[ZonaBarrioId]
+                           ,[Direccion]
+                           ,[Geolocalizacion]
+                           ,[LoginIdAlta]
+                           ,[FechaAlta]
+                           ,[LoginIdModificacion]
+                           ,[FechaUltModificacion]
+                           ,[Habilitado])
+                     VALUES
+                           (@Nombre
+                           ,@Apellido
+                           ,@TipoDocumentoId
+                           ,@NumeroDocumento
+                           ,@PaisId
+                           ,@DepartamentoId
+                           ,@CiudadId
+                           ,@ZonaBarrioId
+                           ,@Direccion
+                           ,@Geolocalizacion
+                           ,@LoginIdAlta
+                           ,@FechaAlta
+                           ,@LoginIdModificacion
+                           ,@FechaUltModificacion
+                           ,@Habilitado)";
+                using SqlCommand cmd = new(script, conn);
+                cmd.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = persona.Nombre;
+                cmd.Parameters.Add("@Apellido", SqlDbType.VarChar).Value = persona.Apellido ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@TipoDocumentoId", SqlDbType.Int).Value = persona.TipoDocumentoId ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@NumeroDocumento", SqlDbType.VarChar).Value = persona.NumeroDocumento ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@PaisId", SqlDbType.Int).Value = persona.PaisId;
+                cmd.Parameters.Add("@DepartamentoId", SqlDbType.Int).Value = persona.DepartamentoId;
+                cmd.Parameters.Add("@CiudadId", SqlDbType.Int).Value = persona.CiudadId;
+                cmd.Parameters.Add("@ZonaBarrioId", SqlDbType.Int).Value = persona.ZonaBarrioId ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Direccion", SqlDbType.VarChar).Value = persona.Direccion ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Geolocalizacion", SqlDbType.VarChar).Value = persona.Geolocalizacion ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@LoginIdAlta", SqlDbType.Int).Value = persona.LoginIdAlta ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = persona.FechaAlta ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
+                int newId = await cmd.ExecuteNonQueryAsync(); //Ver para retornar el id asignado al nuevo registro para así agregarle los contactos. Ahora retorna la cantidad de registros agregados nada más
+                return newId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public override Task AddContactos(List<PersonaContacto>? listaContactos)
         {
             throw new NotImplementedException();
         }
 
-        public override Task AddContactos(List<PersonaContacto> listaContacots)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task Delete(int id)
+        public override Task<int> Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -60,7 +119,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                           ,P.[FechaUltModificacion] FechaUltMod
                           ,P.[Habilitado] Habilitado
                       FROM [dbo].[Persona] AS P
-					  INNER JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
+					  LEFT JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
 					  INNER JOIN Pais ON Pais.Id = P.PaisId
 					  INNER JOIN Departamento AS DP ON DP.Id = P.DepartamentoId
 					  INNER JOIN Ciudad AS CI ON CI.Id = P.CiudadId
@@ -71,9 +130,10 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 using SqlCommand cmd = new(script, conn);
                 cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
                 using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                Persona persona = new();
                 if (reader.Read())
                 {
-                    Persona persona = new()
+                    persona = new()
                     {
                         Id = reader.GetInt32("Id"),
                         Nombre = reader.GetString("Nombre"),
@@ -130,9 +190,8 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                         });
                     }
                     persona.Contactos = personaContactos;
-                    return persona;
                 }
-                return null;
+                return persona;
             }
             catch (Exception)
             {
@@ -158,8 +217,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
 						  ,CI.Denominacion Ciudad
                       FROM [dbo].[Persona] AS P
 					  INNER JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
-					  INNER JOIN Ciudad AS CI ON CI.Id = P.CiudadId
-                      WHERE P.[Habilitado] = 1";
+					  INNER JOIN Ciudad AS CI ON CI.Id = P.CiudadId";
                 using SqlCommand cmd = new(script, conn);
                 using SqlDataReader reader = await cmd.ExecuteReaderAsync();
                 List<PersonaPreview> personas = new();
@@ -185,14 +243,59 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             }
         }
 
-        public override async Task<List<PersonaContacto>?> GetContactos(int id)
+        public override Task<List<PersonaContacto>?> GetContactos(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override Task Update(Persona entity)
+        public override async Task<int> Update(Persona persona)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using SqlConnection conn = new(_connectionString);
+                await conn.OpenAsync();
+                string script =
+                    $@"UPDATE [dbo].[Persona]
+                       SET [Nombre] = @Nombre
+                          ,[Apellido] = @Apellido
+                          ,[TipoDocumentoId] = @TipoDocumentoId
+                          ,[NumeroDocumento] = @NumeroDocumento
+                          ,[PaisId] = @PaisId
+                          ,[DepartamentoId] = @DepartamentoId
+                          ,[CiudadId] = @CiudadId
+                          ,[ZonaBarrioId] = @ZonaBarrioId
+                          ,[Direccion] = @Direccion
+                          ,[Geolocalizacion] = @Geolocalizacion
+                          ,[LoginIdAlta] = @LoginIdAlta
+                          ,[FechaAlta] = @FechaAlta
+                          ,[LoginIdModificacion] = @LoginIdModificacion
+                          ,[FechaUltModificacion] = @FechaUltModificacion
+                          ,[Habilitado] = @Habilitado
+                       WHERE Id = @PersonaId";
+                using SqlCommand cmd = new(script, conn);
+                cmd.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = persona.Nombre;
+                cmd.Parameters.Add("@Apellido", SqlDbType.VarChar).Value = persona.Apellido ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@TipoDocumentoId", SqlDbType.Int).Value = persona.TipoDocumentoId ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@NumeroDocumento", SqlDbType.VarChar).Value = persona.NumeroDocumento ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@PaisId", SqlDbType.Int).Value = persona.PaisId;
+                cmd.Parameters.Add("@DepartamentoId", SqlDbType.Int).Value = persona.DepartamentoId;
+                cmd.Parameters.Add("@CiudadId", SqlDbType.Int).Value = persona.CiudadId;
+                cmd.Parameters.Add("@ZonaBarrioId", SqlDbType.Int).Value = persona.ZonaBarrioId ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Direccion", SqlDbType.VarChar).Value = persona.Direccion ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Geolocalizacion", SqlDbType.VarChar).Value = persona.Geolocalizacion ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@LoginIdAlta", SqlDbType.Int).Value = persona.LoginIdAlta ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = persona.FechaAlta ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
+                cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = persona.Id;
+                int result = await cmd.ExecuteNonQueryAsync(); //Ver para retornar el id asignado al nuevo registro para así agregarle los contactos. Ahora retorna la cantidad de registros agregados nada más
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

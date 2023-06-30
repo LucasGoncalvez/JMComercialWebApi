@@ -71,8 +71,8 @@ namespace JMComercialWebApi.Controllers
         {
             try
             {
-                await _database.Update(persona);
-                return Ok();
+                int result = await _database.Update(persona);
+                return Ok(result);
             }
             catch (Exception ex)
             {

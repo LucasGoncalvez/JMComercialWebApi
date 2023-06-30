@@ -10,7 +10,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
         {
         }
 
-        public override Task Add(Persona entity)
+        public override Task<int> Add(Persona entity)
         {
             throw new NotImplementedException();
         }
@@ -20,7 +20,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override Task Delete(int id)
+        public override Task<int> Delete(int id)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +44,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override Task Update(Persona entity)
+        public override Task<int> Update(Persona entity)
         {
             throw new NotImplementedException();
         }
