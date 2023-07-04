@@ -2,6 +2,7 @@
 using JMComercialWebApi.Data.Databases.PostgreSQL;
 using JMComercialWebApi.Data.Databases.SQLServer;
 using JMComercialWebApi.Data.Interfaces;
+using JMComercialWebApi.Models.Details;
 using JMComercialWebApi.Models.Gets;
 using JMComercialWebApi.Models.Tables;
 
@@ -15,7 +16,7 @@ namespace JMComercialWebApi.Services
             _database = database;
         }
 
-        public async Task<Persona?> Get(int id)
+        public async Task<PersonaDetail?> Get(int id)
         {
             try
             {
@@ -51,9 +52,16 @@ namespace JMComercialWebApi.Services
             }
         }
 
-        public Task AddContactos(List<PersonaContacto>? listaContacots)
+        public async Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _database._personaActions.AddContactos(listaContacots);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<int?> Delete(int id)
@@ -61,9 +69,16 @@ namespace JMComercialWebApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<PersonaContacto>?> GetContactos(int id)
+        public async Task<List<PersonaContactoDetail>?> GetContactos(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _database._personaActions.GetContactos(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<int?> Update(Persona persona)

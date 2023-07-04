@@ -1,4 +1,5 @@
 ﻿using JMComercialWebApi.Data;
+using JMComercialWebApi.Models.Details;
 using JMComercialWebApi.Models.Tables;
 using JMComercialWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +16,9 @@ namespace JMComercialWebApi.Controllers
             _database = new PersonaService(database);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Persona>> Get(int id)
+        [HttpGet]
+        [Route("Get")]
+        public async Task<ActionResult<PersonaDetail?>> Get(int id)
         {
             try
             {
@@ -33,13 +35,14 @@ namespace JMComercialWebApi.Controllers
             }
         }
 
-        [HttpGet("All")]
+        [HttpGet]
+        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             try
             {
                 var personas = await _database.GetAll();
-                if (personas == null)
+                if (personas == null || personas.Count == 0)
                 {
                     return NotFound(); // Retorna un código de estado 404 si no se encuentra
                 }
@@ -51,16 +54,13 @@ namespace JMComercialWebApi.Controllers
             }
         }
 
-        [HttpPost("Add")]
+        [HttpPost]
+        [Route("Add")]
         public async Task<ActionResult> Add(Persona persona)
         {
             try
             {
                 int? result = await _database.Add(persona);
-                if (result == null)
-                {
-                    return BadRequest("No se pudo agregar a Persona");
-                }
                 return Ok(result);
             }
             catch (Exception ex)
@@ -70,7 +70,8 @@ namespace JMComercialWebApi.Controllers
         }
 
 
-        [HttpPut("Update")]
+        [HttpPut]
+        [Route("Update")]
         public async Task<IActionResult> Update(Persona persona)
         {
             try
@@ -88,13 +89,44 @@ namespace JMComercialWebApi.Controllers
             }
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete]
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _database.Delete(id);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("AddContacts")]
+        public async Task<IActionResult> AddContacts(List<PersonaContacto>? listaContactos)
+        {
+            try
+            {
+                var result = await _database.AddContactos(listaContactos);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetContacts")]
+        public async Task<IActionResult> GetContacts(int personaId)
+        {
+            try
+            {
+                var result = await _database.GetContactos(personaId);
+                return Ok(result);
             }
             catch (Exception ex)
             {

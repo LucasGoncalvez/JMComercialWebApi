@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using JMComercialWebApi.Utils;
 using System.Data;
 using JMComercialWebApi.Models.Gets;
+using JMComercialWebApi.Models.Details;
 
 namespace JMComercialWebApi.Data.Databases.SQLServer
 {
@@ -70,8 +71,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
                 cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
                 cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
-                int? newId = (int?)await cmd.ExecuteScalarAsync();
-                //Guardar los contactos
+                int? newId = (int?)await cmd.ExecuteScalarAsync();//Retorna el id con que se agregó a la persona
                 return newId;
             }
             catch (Exception)
@@ -79,11 +79,10 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 throw;
             }
         }
-
         #endregion
 
         #region Get
-        public override async Task<Persona?> Get(int id)
+        public override async Task<PersonaDetail?> Get(int id)
         {
             try
             {
@@ -125,7 +124,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                 using SqlCommand cmd = new(script, conn);
                 cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
                 using SqlDataReader reader = await cmd.ExecuteReaderAsync();
-                Persona? persona = null;
+                PersonaDetail? persona = null;
                 if (reader.Read())
                 {
                     persona = new()
@@ -154,37 +153,6 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                         FechaUltMod = Safer.SafeGetDateTime(reader, "FechaUltMod"),
                         Habilitado = reader.GetBoolean("Habilitado")
                     };
-                    await reader.CloseAsync();
-                    //Obtenemos todos los contactos registrados para la persona
-                    string scriptContact =
-                    $@"SELECT PC.[Id] Id
-                                 ,PC.[PersonaId] PersonaId
-                                 ,PC.[TipoContactoId] TipoContactoId
-                           	     ,TC.Denominacion TipoContacto
-                                 ,PC.[Valor] Valor
-                                 ,PC.[Descripcion] Descripcion
-                                 ,PC.[Habilitado] Habilitado
-                      FROM [dbo].[PersonaContacto] PC
-                      INNER JOIN TipoContacto AS TC ON TC.Id = PC.TipoContactoId
-                      WHERE PersonaId = @PersonaId";
-                    using SqlCommand cmdContact = new(scriptContact, conn);
-                    cmdContact.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
-                    using SqlDataReader readerContact = await cmdContact.ExecuteReaderAsync();
-                    List<PersonaContacto>? personaContactos = new();
-                    while (readerContact.Read())
-                    {
-                        personaContactos.Add(new PersonaContacto
-                        {
-                            Id = readerContact.GetInt32("Id"),
-                            PersonaId = readerContact.GetInt32("PersonaId"),
-                            TipoContactoId = readerContact.GetInt32("TipoContactoId"),
-                            TipoContacto = readerContact.GetString("TipoContacto"),
-                            Valor = readerContact.GetString("Valor"),
-                            Descripcion = Safer.SafeGetString(readerContact, "Descripcion"),
-                            Habilitado = Safer.SafeGetBoolean(readerContact, "Habilitado")
-                        });
-                    }
-                    persona.Contactos = personaContactos;
                 }
                 return persona;
             }
@@ -206,32 +174,28 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                     @$"SELECT P.[Id] Id
                           ,P.[Nombre] Nombre
                           ,P.[Apellido] Apellido
-                          ,P.[TipoDocumentoId] TipoDocumentoId
 						  ,TD.[Denominacion] TipoDocumento
                           ,P.[NumeroDocumento] NumeroDocumento
-                          ,P.[CiudadId] CiudadId
 						  ,CI.Denominacion Ciudad
                       FROM [dbo].[Persona] AS P
 					  INNER JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
 					  INNER JOIN Ciudad AS CI ON CI.Id = P.CiudadId";
                 using SqlCommand cmd = new(script, conn);
                 using SqlDataReader reader = await cmd.ExecuteReaderAsync();
-                List<PersonaPreview> personas = new();
-                while(reader.Read())
+                List<PersonaPreview> personasPreview = new();
+                while (reader.Read())
                 {
-                    personas.Add(new PersonaPreview
+                    personasPreview.Add(new PersonaPreview
                     {
                         Id = reader.GetInt32("Id"),
                         Nombre = reader.GetString("Nombre"),
                         Apellido = Safer.SafeGetString(reader, "Apellido"),
-                        TipoDocumentoId = Safer.SafeGetInt(reader, "TipoDocumentoId"),
                         TipoDocumento = Safer.SafeGetString(reader, "TipoDocumento"),
                         NumeroDocumento = Safer.SafeGetString(reader, "NumeroDocumento"),
-                        CiudadId = reader.GetInt32("CiudadId"),
                         Ciudad = reader.GetString("Ciudad")
                     });
                 }
-                return personas;
+                return personasPreview;
             }
             catch (Exception)
             {
@@ -243,6 +207,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         #region Update
         public override async Task<int?> Update(Persona persona)
         {
+            /*Retorna la cantidad de registros actualizados*/
             try
             {
                 using SqlConnection conn = new(_connectionString);
@@ -292,14 +257,79 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         }
         #endregion
 
-        public override Task<List<PersonaContacto>?> GetContactos(int id)
+        public override async Task<List<PersonaContactoDetail>?> GetContactos(int id)
         {
-            throw new NotImplementedException();
+            using SqlConnection conn = new(_connectionString);
+            await conn.OpenAsync();
+            string scriptContact =
+            $@"SELECT PC.[Id] Id
+                                 ,PC.[PersonaId] PersonaId
+                                 ,PC.[TipoContactoId] TipoContactoId
+                           	     ,TC.Denominacion TipoContacto
+                                 ,PC.[Valor] Valor
+                                 ,PC.[Descripcion] Descripcion
+                                 ,PC.[Habilitado] Habilitado
+                      FROM [dbo].[PersonaContacto] PC
+                      INNER JOIN TipoContacto AS TC ON TC.Id = PC.TipoContactoId
+                      WHERE PersonaId = @PersonaId";
+            using SqlCommand cmd = new(scriptContact, conn);
+            cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = id;
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            List<PersonaContactoDetail> personaContactos = new(); //Si no hay contactos, que retorne vacío.
+            while (reader.Read())
+            {
+                personaContactos.Add(new PersonaContactoDetail
+                {
+                    Id = reader.GetInt32("Id"),
+                    PersonaId = reader.GetInt32("PersonaId"),
+                    TipoContactoId = reader.GetInt32("TipoContactoId"),
+                    TipoContacto = reader.GetString("TipoContacto"),
+                    Valor = reader.GetString("Valor"),
+                    Descripcion = Safer.SafeGetString(reader, "Descripcion"),
+                    Habilitado = Safer.SafeGetBoolean(reader, "Habilitado")
+                });
+            }
+            return personaContactos;
         }
 
-        public override Task AddContactos(List<PersonaContacto>? listaContactos)
+        public override async Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContactos)
         {
-            throw new NotImplementedException();
+            /*Recibe una lista de contactos que se agregaran a una persona en específico según el id que se reciba.
+             Retornará la lista de id's que corresponderán a los contactos agregados.*/
+            if (listaContactos == null)
+                return null;
+
+            using SqlConnection conn = new(_connectionString);
+            await conn.OpenAsync();
+            string script =
+                    $@"INSERT INTO [dbo].[PersonaContacto]
+                            ([PersonaId]
+                            ,[TipoContactoId]
+                            ,[Valor]
+                            ,[Descripcion]
+                            ,[Habilitado])
+                     OUTPUT INSERTED.[Id]
+                     VALUES
+                            (@PersonaId
+                            ,@TipoContactoId
+                            ,@Valor
+                            ,@Descripcion
+                            ,@Habilitado)";
+            using SqlCommand cmd = new(script, conn);
+            List<int?>? contactosId = new();
+            foreach (var contacto in listaContactos)
+            {
+                cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = contacto.PersonaId;
+                cmd.Parameters.Add("@TipoContactoId", SqlDbType.Int).Value = contacto.TipoContactoId;
+                cmd.Parameters.Add("@Valor", SqlDbType.VarChar).Value = contacto.Valor ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Descripcion", SqlDbType.VarChar).Value = contacto.Descripcion ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = contacto.Habilitado ?? (object)DBNull.Value;
+
+                int? newId = (int?)await cmd.ExecuteScalarAsync();//Retorna el id con que se agregó
+                contactosId.Add(newId);//Se agrega el nuevo id a la lista para retornarlos
+                cmd.Parameters.Clear();
+            }
+            return contactosId;
         }
 
         public override Task<int?> Delete(int id)

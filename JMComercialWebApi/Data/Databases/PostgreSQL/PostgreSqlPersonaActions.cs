@@ -1,4 +1,5 @@
 ﻿using JMComercialWebApi.Data.Abstracts;
+using JMComercialWebApi.Models.Details;
 using JMComercialWebApi.Models.Gets;
 using JMComercialWebApi.Models.Tables;
 
@@ -15,7 +16,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override Task AddContactos(List<PersonaContacto>? listaContacots)
+        public override Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots)
         {
             throw new NotImplementedException();
         }
@@ -25,9 +26,9 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override async Task<Persona?> Get(int id)
+        public override async Task<PersonaDetail?> Get(int id)
         {
-            return new Persona
+            return new PersonaDetail
             {
                 Id = id,
                 Nombre = "PostgreSQL"
@@ -39,7 +40,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override Task<List<PersonaContacto>?> GetContactos(int id)
+        public override Task<List<PersonaContactoDetail>?> GetContactos(int id)
         {
             throw new NotImplementedException();
         }

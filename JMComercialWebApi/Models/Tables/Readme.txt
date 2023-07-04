@@ -1,0 +1,1 @@
+﻿Las clases Models/Tables representan a las tablas de la base de datos.
