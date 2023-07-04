@@ -92,5 +92,29 @@ namespace JMComercialWebApi.Services
                 throw;
             }
         }
+
+        public async Task<int?> UpdateContactos(List<PersonaContacto> contacto)
+        {
+            try
+            {
+                return await _database._personaActions.UpdateContactos(contacto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteContacto(int contactoId)
+        {
+            try
+            {
+                await _database._personaActions.DeleteContacto(contactoId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

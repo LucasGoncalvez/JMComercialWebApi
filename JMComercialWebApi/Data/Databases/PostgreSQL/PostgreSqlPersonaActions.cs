@@ -26,6 +26,11 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
+        public override Task DeleteContacto(int contactoId)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<PersonaDetail?> Get(int id)
         {
             return new PersonaDetail
@@ -46,6 +51,11 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
         }
 
         public override Task<int?> Update(Persona entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<int?> UpdateContactos(List<PersonaContacto> contacto)
         {
             throw new NotImplementedException();
         }

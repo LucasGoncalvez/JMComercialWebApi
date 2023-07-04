@@ -13,5 +13,7 @@ namespace JMComercialWebApi.Data.Interfaces
         public Task<int?> Delete(int id);
         public Task<List<PersonaContactoDetail>?> GetContactos(int id);
         public Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots);
+        public Task<int?> UpdateContactos(List<PersonaContacto> contacto);
+        public Task DeleteContacto(int contactoId);
     }
 }

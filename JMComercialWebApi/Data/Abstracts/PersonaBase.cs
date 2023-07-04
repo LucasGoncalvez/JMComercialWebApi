@@ -18,6 +18,8 @@ namespace JMComercialWebApi.Data.Abstracts
 
         public abstract Task<int?> Delete(int id);
 
+        public abstract Task DeleteContacto(int contactoId);
+
         public abstract Task<PersonaDetail?> Get(int id);
 
         public abstract Task<List<PersonaPreview>?> GetAll();
@@ -25,5 +27,7 @@ namespace JMComercialWebApi.Data.Abstracts
         public abstract Task<List<PersonaContactoDetail>?> GetContactos(int id);
 
         public abstract Task<int?> Update(Persona entity);
+
+        public abstract Task<int?> UpdateContactos(List<PersonaContacto> contacto);
     }
 }

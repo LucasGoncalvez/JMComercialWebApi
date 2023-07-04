@@ -296,7 +296,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
         {
             /*Recibe una lista de contactos que se agregaran a una persona en específico según el id que se reciba.
              Retornará la lista de id's que corresponderán a los contactos agregados.*/
-            if (listaContactos == null)
+            if (listaContactos == null || !listaContactos.Any())
                 return null;
 
             using SqlConnection conn = new(_connectionString);
@@ -317,22 +317,40 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                             ,@Habilitado)";
             using SqlCommand cmd = new(script, conn);
             List<int?>? contactosId = new();
+
+            //Se crean los parametros
+            cmd.Parameters.Add("@PersonaId", SqlDbType.Int);
+            cmd.Parameters.Add("@TipoContactoId", SqlDbType.Int);
+            cmd.Parameters.Add("@Valor", SqlDbType.VarChar);
+            cmd.Parameters.Add("@Descripcion", SqlDbType.VarChar);
+            cmd.Parameters.Add("@Habilitado", SqlDbType.Bit);
+
+            //Se cargan los parametros con los valores correspondientes
             foreach (var contacto in listaContactos)
             {
-                cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = contacto.PersonaId;
-                cmd.Parameters.Add("@TipoContactoId", SqlDbType.Int).Value = contacto.TipoContactoId;
-                cmd.Parameters.Add("@Valor", SqlDbType.VarChar).Value = contacto.Valor ?? (object)DBNull.Value;
-                cmd.Parameters.Add("@Descripcion", SqlDbType.VarChar).Value = contacto.Descripcion ?? (object)DBNull.Value;
-                cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = contacto.Habilitado ?? (object)DBNull.Value;
+                cmd.Parameters["@PersonaId"].Value = contacto.PersonaId;
+                cmd.Parameters["@TipoContactoId"].Value = contacto.TipoContactoId;
+                cmd.Parameters["@Valor"].Value = contacto.Valor ?? (object)DBNull.Value;
+                cmd.Parameters["@Descripcion"].Value = contacto.Descripcion ?? (object)DBNull.Value;
+                cmd.Parameters["@Habilitado"].Value = contacto.Habilitado ?? (object)DBNull.Value;
 
                 int? newId = (int?)await cmd.ExecuteScalarAsync();//Retorna el id con que se agregó
                 contactosId.Add(newId);//Se agrega el nuevo id a la lista para retornarlos
-                cmd.Parameters.Clear();
             }
             return contactosId;
         }
 
         public override Task<int?> Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task DeleteContacto(int contactoId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<int?> UpdateContactos(List<PersonaContacto> contacto)
         {
             throw new NotImplementedException();
         }

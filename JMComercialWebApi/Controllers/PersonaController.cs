@@ -134,5 +134,35 @@ namespace JMComercialWebApi.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("UpdateContactos")]
+        public async Task<IActionResult> UpdateContactos(List<PersonaContacto> contactos)
+        {
+            try
+            {
+                var result = await _database.UpdateContactos(contactos);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteContacto")]
+        public async Task<IActionResult> DeleteContacto(int contactoId)
+        {
+            try
+            {
+                await _database.DeleteContacto(contactoId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
