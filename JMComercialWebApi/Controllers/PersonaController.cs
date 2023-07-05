@@ -16,9 +16,10 @@ namespace JMComercialWebApi.Controllers
             _database = new PersonaService(database);
         }
 
+        #region Get
         [HttpGet]
         [Route("Get")]
-        public async Task<ActionResult<PersonaDetail?>> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
@@ -34,7 +35,9 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest($"Ha ocurrido un error: {ex.Message}"); // Retorna un código de estado 400 en caso de error
             }
         }
+        #endregion
 
+        #region GetAll
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -44,16 +47,18 @@ namespace JMComercialWebApi.Controllers
                 var personas = await _database.GetAll();
                 if (personas == null || personas.Count == 0)
                 {
-                    return NotFound(); // Retorna un código de estado 404 si no se encuentra
+                    return NotFound(); // Retorna un código de estado 404 si no existen registros
                 }
-                return Ok(personas); // Retorna un código de estado 200 con lo encontrado
+                return Ok(personas); // Retorna un código de estado 200 con los regitros encontrados
             }
             catch (Exception ex)
             {
                 return BadRequest($"Ha ocurrido un error: {ex.Message}"); // Retorna un código de estado 400 en caso de error
             }
         }
+        #endregion
 
+        #region Add
         [HttpPost]
         [Route("Add")]
         public async Task<ActionResult> Add(Persona persona)
@@ -68,8 +73,9 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest($"Ha ocurrido un error: {ex.Message}");
             }
         }
+        #endregion
 
-
+        #region Update
         [HttpPut]
         [Route("Update")]
         public async Task<IActionResult> Update(Persona persona)
@@ -79,7 +85,7 @@ namespace JMComercialWebApi.Controllers
                 int? result = await _database.Update(persona); //Retorna la cantidad de registros afectados
                 if (result == null)
                 {
-                    return BadRequest("No se pudo actualizar a Persona");
+                    return BadRequest();
                 }
                 return Ok(result);
             }
@@ -88,7 +94,9 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region Delete
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
@@ -103,22 +111,10 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
-        [HttpPost]
-        [Route("AddContacts")]
-        public async Task<IActionResult> AddContacts(List<PersonaContacto>? listaContactos)
-        {
-            try
-            {
-                var result = await _database.AddContactos(listaContactos);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
+        #region GetContactos
         [HttpGet]
         [Route("GetContacts")]
         public async Task<IActionResult> GetContacts(int personaId)
@@ -133,7 +129,26 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region AddContacts
+        [HttpPost]
+        [Route("AddContacts")]
+        public async Task<IActionResult> AddContacts(List<PersonaContacto>? listaContactos)
+        {
+            try
+            {
+                var result = await _database.AddContactos(listaContactos);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region UpdateContactos
         [HttpPut]
         [Route("UpdateContactos")]
         public async Task<IActionResult> UpdateContactos(List<PersonaContacto> contactos)
@@ -148,7 +163,9 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region DeleteContacto
         [HttpDelete]
         [Route("DeleteContacto")]
         public async Task<IActionResult> DeleteContacto(int contactoId)
@@ -163,6 +180,6 @@ namespace JMComercialWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        #endregion
     }
 }

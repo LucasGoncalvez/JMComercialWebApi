@@ -12,22 +12,16 @@ namespace JMComercialWebApi.Data.Abstracts
         {
             _connectionString = connectionString;
         }
-        public abstract Task<int?> Add(Persona entity);
-
-        public abstract Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots);
-
-        public abstract Task<int?> Delete(int id);
-
-        public abstract Task DeleteContacto(int contactoId);
 
         public abstract Task<PersonaDetail?> Get(int id);
-
         public abstract Task<List<PersonaPreview>?> GetAll();
+        public abstract Task<int?> Add(Persona entity);
+        public abstract Task<int?> Update(Persona entity);
+        public abstract Task Delete(int id);
 
         public abstract Task<List<PersonaContactoDetail>?> GetContactos(int id);
-
-        public abstract Task<int?> Update(Persona entity);
-
+        public abstract Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots);
         public abstract Task<int?> UpdateContactos(List<PersonaContacto> contacto);
+        public abstract Task DeleteContacto(int contactoId);
     }
 }

@@ -21,7 +21,7 @@ namespace JMComercialWebApi.Data.Databases.PostgreSQL
             throw new NotImplementedException();
         }
 
-        public override Task<int?> Delete(int id)
+        public override Task Delete(int id)
         {
             throw new NotImplementedException();
         }
