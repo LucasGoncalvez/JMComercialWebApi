@@ -10,9 +10,11 @@ namespace JMComercialWebApi.Data
         {
             _configuration = configuration;
             _personaActions = new SqlServerPersonaActions(configuration.GetConnectionString("SqlServer"));
+            _ubicacionAction = new SqlServerUbicacionActions(configuration.GetConnectionString("SqlServer"));
         }
 
         public dynamic _personaActions { get; set; }
+        public dynamic _ubicacionAction { get; set; }
 
         public string GetConectionString()
         {
@@ -27,9 +29,11 @@ namespace JMComercialWebApi.Data
         {
             _configuration = configuration;
             _personaActions = new PostgreSqlPersonaActions(configuration.GetConnectionString("SqlServer"));
+            _ubicacionAction = new PostgreSqlUbicacionActions(configuration.GetConnectionString("SqlServer"));
         }
 
         public dynamic _personaActions { get; set; }
+        public dynamic _ubicacionAction { get; set; }
 
         public string GetConectionString()
         {
@@ -46,6 +50,7 @@ namespace JMComercialWebApi.Data
         }
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
@@ -62,6 +67,7 @@ namespace JMComercialWebApi.Data
         }
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
@@ -78,6 +84,7 @@ namespace JMComercialWebApi.Data
         }
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
@@ -94,6 +101,7 @@ namespace JMComercialWebApi.Data
         }
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
@@ -110,6 +118,7 @@ namespace JMComercialWebApi.Data
         }
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {

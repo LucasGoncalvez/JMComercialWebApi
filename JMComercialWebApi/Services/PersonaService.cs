@@ -36,7 +36,7 @@ namespace JMComercialWebApi.Services
             return await _database._personaActions.Update(persona);
         }
 
-        public Task<int?> Delete(int id)
+        public Task Delete(int id)
         {
             throw new NotImplementedException();
         }

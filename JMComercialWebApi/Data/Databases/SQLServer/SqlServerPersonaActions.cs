@@ -102,7 +102,7 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                           ,P.[NumeroDocumento] NumeroDocumento
 						  ,CI.Denominacion Ciudad
                       FROM [dbo].[Persona] AS P
-					  INNER JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
+					  LEFT JOIN TipoDocumento AS TD ON TD.Id = P.TipoDocumentoId
 					  INNER JOIN Ciudad AS CI ON CI.Id = P.CiudadId";
             using SqlCommand cmd = new(script, conn);
             using SqlDataReader reader = await cmd.ExecuteReaderAsync();
