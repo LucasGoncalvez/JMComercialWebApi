@@ -1,6 +1,9 @@
 ﻿using JMComercialWebApi.Data.Abstracts;
 using JMComercialWebApi.Models.Tables;
+using JMComercialWebApi.Utils;
+using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
 
 namespace JMComercialWebApi.Data.Databases.SQLServer
 {
@@ -32,20 +35,32 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
 
         public override async Task<List<Ciudad>?> GetCiudades()
         {
-            List<Ciudad> ciudades = new()
+            using SqlConnection conn = new(_connectionString);
+            await conn.OpenAsync();
+            string script =
+                $@"SELECT CD.[Id]
+						  ,PA.[Id] PaisId
+                          ,CD.[DepartamentoId]
+                          ,CD.[Denominacion]
+                          ,CD.[ISO]
+                  FROM [dbo].[Ciudad] AS CD
+				  INNER JOIN Departamento AS DP ON DP.Id = CD.DepartamentoId
+				  INNER JOIN Pais AS PA ON PA.Id = DP.PaisId";
+            using SqlCommand cmd = new(script, conn);
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            List<Ciudad> listaCiudades = new();
+            while (reader.Read())
             {
-                new Ciudad { Id = 1, DepartamentoId = 1, Denominacion = "Areguá", ISO = null },
-                new Ciudad { Id = 2, DepartamentoId = 1, Denominacion = "Ypane", ISO = null },
-                new Ciudad { Id = 3, DepartamentoId = 1, Denominacion = "Capiatá", ISO = null },
-                new Ciudad { Id = 4, DepartamentoId = 1, Denominacion = "San Lorenzo", ISO = null },
-                new Ciudad { Id = 5, DepartamentoId = 1, Denominacion = "Fernando de la Mora", ISO = null },
-                new Ciudad { Id = 6, DepartamentoId = 1, Denominacion = "Asunción", ISO = null },
-                new Ciudad { Id = 7, DepartamentoId = 1, Denominacion = "Ñemby", ISO = null },
-                new Ciudad { Id = 8, DepartamentoId = 1, Denominacion = "Itaugua", ISO = null },
-                new Ciudad { Id = 9, DepartamentoId = 1, Denominacion = "Luque", ISO = null },
-                new Ciudad { Id = 10, DepartamentoId = 1, Denominacion = "Lambare", ISO = null }
-            };
-            return ciudades;
+                listaCiudades.Add(new Ciudad
+                {
+                    Id = reader.GetInt32("Id"),
+                    PaisId = reader.GetInt32("PaisId"),
+                    DepartamentoId = reader.GetInt32("DepartamentoId"),
+                    Denominacion = reader.GetString("Denominacion"),
+                    ISO = Safer.SafeGetInt(reader, "ISO")
+                });
+            }
+            return listaCiudades;
         }
 
         public override Task<List<Departamento>?> GetDepartamentos()

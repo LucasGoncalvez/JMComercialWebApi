@@ -9,16 +9,18 @@ namespace JMComercialWebApi.Data
         public SQLServer(IConfiguration configuration) 
         {
             _configuration = configuration;
-            _personaActions = new SqlServerPersonaActions(configuration.GetConnectionString("SqlServer"));
-            _ubicacionAction = new SqlServerUbicacionActions(configuration.GetConnectionString("SqlServer"));
+            _personaActions = new SqlServerPersonaActions(GetConectionString());
+            _ubicacionAction = new SqlServerUbicacionActions(GetConectionString());
+            _documentoAction = new SqlServerDocumentoAction(GetConectionString());
         }
 
         public dynamic _personaActions { get; set; }
         public dynamic _ubicacionAction { get; set; }
+        public dynamic _documentoAction { get; set; }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:SqlServer");
+            return _configuration.GetConnectionString("SqlServer");
         }
     }
 
@@ -28,16 +30,17 @@ namespace JMComercialWebApi.Data
         public PostgreSQL(IConfiguration configuration)
         {
             _configuration = configuration;
-            _personaActions = new PostgreSqlPersonaActions(configuration.GetConnectionString("SqlServer"));
-            _ubicacionAction = new PostgreSqlUbicacionActions(configuration.GetConnectionString("SqlServer"));
+            _personaActions = new PostgreSqlPersonaActions(GetConectionString());
+            _ubicacionAction = new PostgreSqlUbicacionActions(GetConectionString());
         }
 
         public dynamic _personaActions { get; set; }
         public dynamic _ubicacionAction { get; set; }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:PostgreSql");
+            return _configuration.GetConnectionString("PostgreSql");
         }
     }
 
@@ -51,10 +54,11 @@ namespace JMComercialWebApi.Data
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:Oracle");
+            return _configuration.GetConnectionString("Oracle");
         }
     }
 
@@ -68,10 +72,11 @@ namespace JMComercialWebApi.Data
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:MySql");
+            return _configuration.GetConnectionString("MySql");
         }
     }
 
@@ -85,10 +90,11 @@ namespace JMComercialWebApi.Data
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:");
+            return _configuration.GetConnectionString("");
         }
     }
 
@@ -102,10 +108,11 @@ namespace JMComercialWebApi.Data
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:");
+            return _configuration.GetConnectionString("");
         }
     }
 
@@ -119,10 +126,11 @@ namespace JMComercialWebApi.Data
 
         public dynamic _personaActions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public dynamic _ubicacionAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public dynamic _documentoAction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetConectionString()
         {
-            return _configuration.GetValue<string>("ConnectionStrings:");
+            return _configuration.GetConnectionString("");
         }
     }
 }

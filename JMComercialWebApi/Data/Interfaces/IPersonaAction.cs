@@ -10,7 +10,7 @@ namespace JMComercialWebApi.Data.Interfaces
         public Task<List<PersonaPreview>?> GetAll();
         public Task<int?> Add(Persona entity); //Retornará el id con que se agregó el nuevo registro
         public Task<int?> Update(Persona entity); //Retornará la cantidad de registros modificados
-        public Task Delete(int id); //No sé que retornar
+        public Task Delete(int id); //Retornar cantidad de filas eliminadas
         public Task<List<PersonaContactoDetail>?> GetContactos(int id);
         public Task<List<int?>?> AddContactos(List<PersonaContacto>? listaContacots); //Retornará la lista de id's de los nuevos registros
         public Task<int?> UpdateContactos(List<PersonaContacto> contacto);

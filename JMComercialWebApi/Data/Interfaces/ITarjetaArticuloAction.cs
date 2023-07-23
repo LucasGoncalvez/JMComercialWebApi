@@ -8,6 +8,6 @@ namespace JMComercialWebApi.Data.Interfaces
         public Task<TarjetaArticulo?> Get(int id);
         public Task Add(TarjetaArticulo entity); //Hacer que retorne el id con el que se agregó en la bd
         public Task Update(TarjetaArticulo entity);
-        public Task Delete(int id);
+        public Task Delete(int id); //Retornar cantidad de filas eliminadas
     }
 }
