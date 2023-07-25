@@ -14,9 +14,9 @@
         public string? Direccion { get; set; }
         public string? Geolocalizacion { get; set; }
         public int? LoginIdAlta { get; set; }
-        public DateTime? FechaAlta { get; set; }
+        public string? FechaAlta { get; set; }
         public int? LoginIdUltMod { get; set; }
-        public DateTime? FechaUltMod { get; set; }
+        public string? FechaUltMod { get; set; }
         public bool Habilitado { get; set; }
 
     }

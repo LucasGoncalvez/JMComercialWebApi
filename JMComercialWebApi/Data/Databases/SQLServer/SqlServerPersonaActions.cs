@@ -174,9 +174,9 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             cmd.Parameters.Add("@Direccion", SqlDbType.VarChar).Value = persona.Direccion ?? (object)DBNull.Value;
             cmd.Parameters.Add("@Geolocalizacion", SqlDbType.VarChar).Value = persona.Geolocalizacion ?? (object)DBNull.Value;
             cmd.Parameters.Add("@LoginIdAlta", SqlDbType.Int).Value = persona.LoginIdAlta ?? (object)DBNull.Value;
-            cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = persona.FechaAlta ?? (object)DBNull.Value;
+            cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = DateTime.Now;//persona.FechaAlta ?? (object)DBNull.Value;
             cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
-            cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
+            cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = (object)DBNull.Value;//persona.FechaUltMod ?? (object)DBNull.Value;
             cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
             int? newId = (int?)await cmd.ExecuteScalarAsync();//Retorna el id con que se agregó a la persona
             return newId;
@@ -202,7 +202,6 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
                           ,[Direccion] = @Direccion
                           ,[Geolocalizacion] = @Geolocalizacion
                           ,[LoginIdAlta] = @LoginIdAlta
-                          ,[FechaAlta] = @FechaAlta
                           ,[LoginIdModificacion] = @LoginIdModificacion
                           ,[FechaUltModificacion] = @FechaUltModificacion
                           ,[Habilitado] = @Habilitado
@@ -219,9 +218,9 @@ namespace JMComercialWebApi.Data.Databases.SQLServer
             cmd.Parameters.Add("@Direccion", SqlDbType.VarChar).Value = persona.Direccion ?? (object)DBNull.Value;
             cmd.Parameters.Add("@Geolocalizacion", SqlDbType.VarChar).Value = persona.Geolocalizacion ?? (object)DBNull.Value;
             cmd.Parameters.Add("@LoginIdAlta", SqlDbType.Int).Value = persona.LoginIdAlta ?? (object)DBNull.Value;
-            cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = persona.FechaAlta ?? (object)DBNull.Value;
+            //cmd.Parameters.Add("@FechaAlta", SqlDbType.DateTime).Value = persona.FechaAlta ?? (object)DBNull.Value;
             cmd.Parameters.Add("@LoginIdModificacion", SqlDbType.Int).Value = persona.LoginIdUltMod ?? (object)DBNull.Value;
-            cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = persona.FechaUltMod ?? (object)DBNull.Value;
+            cmd.Parameters.Add("@FechaUltModificacion", SqlDbType.DateTime).Value = DateTime.Now;//persona.FechaUltMod ?? (object)DBNull.Value;
             cmd.Parameters.Add("@Habilitado", SqlDbType.Bit).Value = persona.Habilitado;
             cmd.Parameters.Add("@PersonaId", SqlDbType.Int).Value = persona.Id;
 

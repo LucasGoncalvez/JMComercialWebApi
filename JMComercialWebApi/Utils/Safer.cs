@@ -53,9 +53,9 @@ namespace JMComercialWebApi.Utils
             return reader.IsDBNull(column) ? null : (bool?)reader.GetBoolean(column);
         }
 
-        public static DateTime? SafeGetDateTime(SqlDataReader reader, string column)
+        public static string? SafeGetDateTime(SqlDataReader reader, string column)
         {
-            return reader.IsDBNull(column) ? null : (DateTime?)reader.GetDateTime(column);
+            return reader.IsDBNull(column) ? null : (string?)reader.GetDateTime(column).ToString();
         }
     }
 }
